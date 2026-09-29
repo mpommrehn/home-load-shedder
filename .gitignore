@@ -1,0 +1,14 @@
+# Machine-local checkpoint
+STATUS.md
+# Executor/reviewer evidence names local paths
+evidence/
+# Never commit secrets or runtime data
+secret
+*.secret
+.env
+passwd
+*.acl.local
+__pycache__/
+*.pyc
+# Agent worktrees
+.claude/
