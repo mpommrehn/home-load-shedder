@@ -61,3 +61,25 @@ claims re-checked against Tesla's own manuals:
 **Left open.** The Finder reset case, the Nest's reaction to opened wires,
 LIFX support on the 2017 bulbs, the iPad soak test, and the UPS on NUT's
 list are all unverified and scheduled as tests in the phases.
+
+**Continued the same evening: the first hardware test (LIFX).** Mark asked
+for a quick test on a real bulb. The first sweep of the main LAN found no
+LIFX device: Mark keeps most IoT on the router's isolated guest network, and
+this PC's VPN also swallowed traffic to that subnet. Mark moved one bulb to
+the main LAN, and a throwaway standard-library script drove it over the LIFX
+LAN protocol with no cloud:
+- Red pulses every 15 s for 2 minutes, all acknowledged and seen by Mark;
+  each pulse returns the bulb exactly to its previous state.
+- Infrared is controllable separately: on with the visible light off, off,
+  and at 10%, each confirmed by Mark with night-vision glasses.
+- A bulb that is off shows no pulse, even though it acknowledges one; at 1%
+  it shows both colours. So the shedder turns an alert bulb on first.
+- Mark chose the alert pattern from what he saw: red at the grid drop, three
+  pulses every 30 s at 30% for 5 minutes, then one at 10% every 30 s for the
+  rest of the outage; green at the grid's return, the same shape, ending 15
+  minutes after the bright phase. Full brightness was "REALLY bright".
+- New requirement from the isolation finding: a router rule letting only the
+  laptop reach the IoT network, and a fixed address per bulb.
+
+These go into the spec together with Mark's review; `STATUS.md` holds the
+details until then.
