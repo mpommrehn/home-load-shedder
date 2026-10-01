@@ -83,3 +83,39 @@ LAN protocol with no cloud:
 
 These go into the spec together with Mark's review; `STATUS.md` holds the
 details until then.
+
+## 2026-10-01, session G (9b6b5556): Mark's review begins, dehumidifier
+
+**Mark's words.** "Dehumidifier should go down sooner than 30 minutes as
+purely discretionary. I think 5 minutes. It should have a software
+start-delay time of 3 minutes if that's possible to engineer, in case the
+power goes out at 5 and comes back at 6 minutes. I don't want its compressor
+to start into pressure and pop the motor safety thermal switch." He has a
+second change he could not recall; it is still to come.
+
+**Decisions (Mark).** The dehumidifier gets its own 5-minute tier; TVs and
+lamps stay at 30. A 3-minute start delay protects its compressor.
+
+**How the agent engineered the start delay.** A per-load minimum off time,
+enforced on every path that can send `on`, with the off time written to disk
+first so a restart cannot forget it. The agent pointed out, rather than
+claim more than the timer does, that Mark's exact case is already covered by
+the 10-stable-minutes restore rule (restore at 16 minutes or later); the
+timer is the invariant for every other path.
+
+**Findings that changed the design.**
+- The real short-restart risk is the Powerwall's transfer gap, not the
+  shedder: a running compressor is cut and re-powered within a second while
+  the plug stays on. That happens today. Software cannot see it; the
+  protection is the appliance's own restart delay or a plug-in delay-on-make
+  protector. Decision waits for the model.
+- A dehumidifier that returns on standby after power loss would make every
+  restore a silent no-op. The plug's power reading now confirms each restore.
+
+**Pushback.** The 5-minute tier saves only about 0.2 kWh per outage and makes
+the unit cycle in about half of all outages. Raised to Mark as he signed
+off for the night, not argued; his reason (purely discretionary) stands
+unless he revisits it. The cycling is why compressor protection is in.
+
+**Left open.** The dehumidifier's model, its restart delay, and whether it
+resumes after power loss. Mark's second change.

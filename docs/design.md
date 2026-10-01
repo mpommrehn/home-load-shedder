@@ -2,7 +2,8 @@
 
 Version 0.1 (spec), 2026-09-29, session F of the powerwall work (bccf42aa).
 Every decision below was made with Mark in that session unless marked
-otherwise. Changing one is a decision with Mark, recorded in
+otherwise (2026-10-01, session G: the dehumidifier's 5-minute tier and
+compressor protection). Changing one is a decision with Mark, recorded in
 `home-load-shedder-EVOLUTION.md`.
 
 ## Purpose
@@ -49,9 +50,10 @@ returns 1 to 6 hours after the grid (Mark, from repeated experience).
 | Trigger | Loads | Mechanism |
 |---|---|---|
 | Grid off for **2 min** | Both heat pumps (compressor and heat call) and both air-handler blowers | Hardware only (section "Tier 0"). Restored the moment the grid returns. |
+| Grid off for **5 min** | Dehumidifier (500 W) | Shedder: its Zigbee plug. Purely discretionary (Mark, 2026-10-01). Compressor protection applies (section "Compressor protection"). |
 | Grid off for **15 min** | Miners, then the Windows PC | Shedder: gbox shuts the miners down gracefully and confirms; then the PC agent shuts the PC down (section "Miners and the PC"). |
-| Grid off for **30 min** | Dehumidifier (500 W), TVs, lamps | Shedder: Zigbee plugs and LIFX bulbs over the LAN. |
-| Outage **starts** below **60%** | The 15- and 30-minute tiers, at once | Shedder. The heat pumps still go at 2 min. |
+| Grid off for **30 min** | TVs, lamps | Shedder: Zigbee plugs and LIFX bulbs over the LAN. |
+| Outage **starts** below **60%** | The 5-, 15- and 30-minute tiers, at once | Shedder. The heat pumps still go at 2 min. |
 | Battery at or below **25%** at any time in an outage | Everything the shedder controls | Shedder, whatever the timers say. |
 | Car charging | Wall Connector | Tesla's own "vehicle charging during outage" threshold, set to about 90% by Mark in the Tesla app. Not controlled here. |
 | Clothes dryer | | By hand (Mark's decision, 2026-09-28). |
@@ -63,6 +65,13 @@ in 15 minutes, a quarter of the usable battery, so they go first in every
 season. The house lost about 20 °F in 36 hours in February with no heat, which
 Mark accepts; for a longer outage he runs resistance heaters from a 7,500 W
 portable generator.
+
+The dehumidifier moved from 30 to 5 minutes on 2026-10-01 (Mark): it is
+purely discretionary, so there is no reason to carry it through an outage.
+The energy saved is small (500 W for 25 minutes is about 0.2 kWh, 2% of the
+usable battery); the cost is that, with a 5-to-7-minute median outage, it is
+shed in roughly half of all outages, so it cycles off and on far more often
+than it did at 30 minutes. That is why it gets compressor protection.
 
 ## Components and where they run
 
@@ -161,7 +170,7 @@ minutes continues the same episode: the tier timers are measured from the
 episode start and never restart, so a flickering grid cannot keep resetting
 the 15-minute clock.
 
-**Charge rules.** At episode start, battery below 60% sheds the 15- and
+**Charge rules.** At episode start, battery below 60% sheds the 5-, 15- and
 30-minute tiers at once. At any time in an episode, battery at or below 25%
 sheds everything the shedder controls.
 
@@ -179,6 +188,43 @@ gbox is not running while the PC is off, and the miners start mining on
 power-up (to confirm per model). The PC stays off: it has no wake-on-LAN and
 needs a manual power-supply switch before its power button, so Mark starts it
 by hand.
+
+**Compressor protection** (Mark, 2026-10-01). A compressor switched off runs
+with high pressure on its outlet side for a few minutes. Restarted into that
+pressure, the motor stalls and its thermal overload switch trips. Mark's
+case: the dehumidifier is shed at 5 minutes, the grid returns at 6 minutes.
+- Each load has a **minimum off time**, `min_off`, in its configuration:
+  0 by default, **3 minutes for the dehumidifier** and for any later load
+  with a compressor. The shedder never sends `on` to a load until `min_off`
+  has passed since its last `off`, whatever path asks for it: restore, a
+  manual command, a test, or a retry after a failed report. A blocked `on`
+  is postponed, not dropped, and logged.
+- The time of each `off` is written to disk before the command is sent, so a
+  restart of the shedder or of the laptop cannot forget it. With no record
+  for a load, the shedder treats it as switched off at its own start.
+- In Mark's exact case the restore rule already waits longer: the episode
+  ends only 10 stable minutes after the grid returns, so the dehumidifier
+  comes back at 16 minutes or later. `min_off` is the guard that holds when
+  that rule does not apply, and it stays correct if the 10 minutes is ever
+  shortened.
+- **What software cannot cover: the transfer gap.** When the grid drops,
+  and possibly when it returns, the Powerwall's transfer interrupts the
+  supply for a moment (the PC shutdowns of 2026-09-21 and 09-24 were such
+  gaps). A running compressor loses power and gets it back within a second,
+  with the plug still on, so the shedder never sees it. That is a short
+  restart into pressure, and it happens today, with or without this
+  project. Protection there has to be in the appliance or in hardware:
+  1. the dehumidifier's own restart delay (many units hold the compressor
+     about 3 minutes after power-up; check this model's manual);
+  2. failing that, a plug-in delay-on-make protector (an appliance or
+     refrigerator protector with a restart delay of about 3 minutes)
+     between the plug and the dehumidifier.
+  Decide once the model is known.
+- **Restore check.** Many dehumidifiers come back on standby after a power
+  loss instead of resuming. If this one does, a plug `on` restores nothing.
+  Confirm it resumes (manual, then a test). The plug's power reading confirms
+  every restore: fan draw at once, compressor draw within about 5 minutes; if
+  not, the shedder raises an alert.
 
 **Missing information.** pwlog's heartbeat older than 60 seconds: the shedder
 neither sheds nor restores, and raises an alert. Tier 0 does not depend on
@@ -258,6 +304,8 @@ ES 650G1 on NUT's compatibility list.
 | PC hangs during shutdown | No damage; UPS and NUT client are the last line. |
 | iPad loses its connection | The bulb still pulses; the daily test alert exposes it. |
 | Zigbee coordinator fails | Those plugs are not switched; shedder logs command failures and alerts. |
+| Shedder restarts mid-episode | Off times are on disk; `min_off` still holds. No record: a full `min_off` from the restart. |
+| Dehumidifier does not resume after a plug `on` | No compressor draw within about 5 minutes: alert. |
 
 ## Security
 
