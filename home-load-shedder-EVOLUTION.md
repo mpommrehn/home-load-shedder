@@ -164,3 +164,13 @@ power cycle and wall-watts reading until it gains a Zigbee path. Not decided.
 **Left open.** Which coordinator (guides favour the ZBDongle-P for
 Zigbee2MQTT; Amazon price not yet read). The dehumidifier's model. The
 restore-alert window. Mark's second review change from session G.
+
+**Addendum, same day (decisions, Mark).** The HS110 stays on the SC-BOX,
+which settles the pushback above. The ThirdReality Gen2 metering 4-pack and
+the Sonoff ZBDongle-P are in his Amazon cart, saved for later; not bought.
+Buying the other smart plugs is deferred. Mark asked whether the plug and
+dongle need Home Assistant. They do not: Zigbee2MQTT with the MQTT broker
+the design already has is the whole stack.
+At Mark's request the agent wrote `docs/plugs-and-coordinator-summary.html`,
+a one-page summary of the findings and device recommendations, so he can
+pick the purchase up later without rereading the session.

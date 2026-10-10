@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plugs and coordinator: where it stands</title>
+<style>
+  :root {
+    --bg: #fbfaf7; --panel: #ffffff; --ink: #1d2126; --muted: #5b6470;
+    --line: #dcd8cf; --accent: #0b6e69; --warn: #9a5b00; --warn-bg: #fff4dc;
+    --good: #1f6f3a; --good-bg: #e6f4ea; --bad: #9b2c2c; --bad-bg: #fbe9e7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171a; --panel: #1c2024; --ink: #e6e8ea; --muted: #9aa3ad;
+      --line: #30363c; --accent: #5cc4bd; --warn: #f0c060; --warn-bg: #33290f;
+      --good: #7fd49a; --good-bg: #15301e; --bad: #f09a90; --bad-bg: #3a1c19;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.55 system-ui, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 900px; margin: 0 auto; padding: 28px 16px 64px; }
+  h1 { font-size: 1.7rem; line-height: 1.2; margin: 0 0 4px; text-wrap: balance; }
+  h2 { font-size: 1.2rem; margin: 40px 0 10px; padding-top: 14px;
+    border-top: 1px solid var(--line); }
+  p, li { max-width: 68ch; }
+  .meta { color: var(--muted); font-size: 0.9rem; margin: 0 0 20px; }
+  a { color: var(--accent); }
+  code { font: 0.9em ui-monospace, Consolas, monospace; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
+  .box { background: var(--panel); border: 1px solid var(--line);
+    border-radius: 8px; padding: 14px 16px; margin: 14px 0; }
+  .box > :first-child { margin-top: 0; } .box > :last-child { margin-bottom: 0; }
+  .now { border-left: 4px solid var(--accent); }
+  .scroll { overflow-x: auto; margin: 12px 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.93rem; }
+  th, td { text-align: left; vertical-align: top; padding: 7px 10px;
+    border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; white-space: nowrap; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tag { display: inline-block; font-size: 0.78rem; font-weight: 600;
+    padding: 1px 8px; border-radius: 10px; white-space: nowrap; }
+  .buy { color: var(--good); background: var(--good-bg); }
+  .skip { color: var(--bad); background: var(--bad-bg); }
+  .open { color: var(--warn); background: var(--warn-bg); }
+  .src { color: var(--muted); font-size: 0.85rem; }
+  nav { font-size: 0.9rem; margin: 0 0 8px; }
+  nav a { margin-right: 12px; white-space: nowrap; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Plugs and coordinator: where it stands</h1>
+<p class="meta">home-load-shedder · written 2026-10-10, session H (0b18f330) ·
+prices and stock are a snapshot of that day</p>
+
+<nav>
+  <a href="#now">Now</a><a href="#buy">What to buy</a><a href="#stack">What runs it</a>
+  <a href="#why">Why these</a><a href="#tracker">Gen2 track record</a>
+  <a href="#dehum">Dehumidifier</a><a href="#todo">To do</a><a href="#files">Files</a>
+</nav>
+
+<div class="box now" id="now">
+  <p><strong>Nothing is bought.</strong> The ThirdReality Gen2 metering 4-pack and the
+  Sonoff ZBDongle-P are in your Amazon cart under "Saved for later".</p>
+  <ul>
+    <li>The HS110 stays on the SC-BOX. gbox drives only old-protocol Kasa plugs.</li>
+    <li>Plugs for the other miners are deferred.</li>
+    <li>No Home Assistant is needed. Zigbee2MQTT and Mosquitto are the whole stack.</li>
+    <li>Your second review change to the spec, from 2026-10-01, is still to recall.</li>
+  </ul>
+</div>
+
+<h2 id="buy">What to buy</h2>
+<div class="scroll">
+<table>
+  <tr><th>Item</th><th>Verdict</th><th>Price</th><th>Read by</th><th>Notes</th></tr>
+  <tr>
+    <td>ThirdReality Smart Plug Gen2, metering, 4-pack<br><span class="src">model 3RSP02028BZ</span></td>
+    <td><span class="tag buy">Buy</span></td>
+    <td class="num">$39</td>
+    <td>Mark, on Amazon</td>
+    <td>4.5 stars on 853 reviews, 6% one-star. 15 A, ETL per the listing title.
+      One pack covers the dehumidifier, TVs and lamps.</td>
+  </tr>
+  <tr>
+    <td><a href="https://www.amazon.com/dp/B0FQ712KM8">Sonoff ZBDongle-P</a>, with antenna</td>
+    <td><span class="tag buy">Buy</span></td>
+    <td class="num">$28.99</td>
+    <td>Agent, search results only</td>
+    <td>Seller, brand and stock not confirmed on the product page. Check for an
+      included USB extension cable.</td>
+  </tr>
+  <tr>
+    <td><a href="https://www.amazon.com/dp/B0G4VZB6NC">ThirdReality Smart Plug Gen3</a>, 4-pack<br><span class="src">model 3RSP02064Z</span></td>
+    <td><span class="tag open">Fallback</span></td>
+    <td class="num">$44</td>
+    <td>Mark, on Amazon</td>
+    <td>4.6 stars on 124 reviews, 3% one-star. Stronger repeater. One open firmware-update
+      issue; watts reading can lag about a minute out of the box.</td>
+  </tr>
+  <tr>
+    <td><a href="https://www.amazon.com/dp/B0FNLP58JS">Sonoff ZBDongle-E</a></td>
+    <td><span class="tag open">Fallback</span></td>
+    <td class="num">$36.99</td>
+    <td>Agent, search results only</td>
+    <td>Works, but its Zigbee2MQTT driver is rated less mature than the P's. Its extra is
+      Thread, which the shedder does not use.</td>
+  </tr>
+  <tr>
+    <td>GE 45853GE</td>
+    <td><span class="tag skip">Out</span></td>
+    <td class="num">n/a</td>
+    <td>Mark, on Amazon</td>
+    <td>Unavailable. 4 stars on 350 reviews, 11% one-star.</td>
+  </tr>
+  <tr>
+    <td>OWON WSP404</td>
+    <td><span class="tag skip">Out</span></td>
+    <td class="num">n/a</td>
+    <td>Agent, web search</td>
+    <td>No Amazon listing found. Sources disagree on 15 A against 10 A.</td>
+  </tr>
+</table>
+</div>
+<p><strong>Check the 4-pack's title says "with real-time energy monitoring".</strong>
+ThirdReality sells a near-identical 4-pack with no meter.</p>
+
+<h2 id="stack">What runs it</h2>
+<p>Both pieces run on the Devuan laptop, and both are already in the design.</p>
+<ul>
+  <li><strong>Zigbee2MQTT</strong> talks to the dongle over USB. It is the "hub" the plug
+    listing asks for, with its own web page for pairing, naming and settings.</li>
+  <li><strong>Mosquitto</strong> carries state and watts out and on/off commands in. The
+    shedder reads and writes those messages.</li>
+</ul>
+<p>Not needed: Home Assistant, a ThirdReality hub, the ThirdReality app, or any account.</p>
+<p>Work that is not written yet:</p>
+<ul>
+  <li>Zigbee2MQTT needs Node.js, and its install guide assumes systemd. Devuan needs a
+    small sysvinit start script.</li>
+  <li>Put the dongle on a short USB extension cable, away from USB 3 ports, which
+    interfere with Zigbee.</li>
+</ul>
+
+<h2 id="why">Why these</h2>
+<p>The September research ranked three families for an outage with no internet:</p>
+<ol>
+  <li><strong>Zigbee plugs with a USB coordinator.</strong> No Wi-Fi, no cloud, no internet
+    clock. Chosen.</li>
+  <li><strong>Z-Wave</strong> (Zooz ZEN15 for motor loads, ZEN04 for lamps). Best range,
+    $30 to $45 a plug. The alternative if Zigbee disappoints.</li>
+  <li><strong>Pre-flashed ESPHome or Tasmota</strong> (Athom US 16 A). Fully local, but on
+    Wi-Fi, and UL listing unverified.</li>
+</ol>
+<p><strong>Not TP-Link for new plugs.</strong> TP-Link support confirmed that a Tapo P110
+loses energy monitoring after a power loss until it sees the internet again, and a
+firmware update can break local control. The HS110 you own is the old protocol and stays.</p>
+<p><strong>Gen2 over Gen3.</strong> Both are in Zigbee2MQTT with the same metering and both
+expose the power-on behaviour setting, so the Gen3's "power-on restoration" is not
+exclusive to it. The Gen2 has seven times the reviews.</p>
+<p><strong>ZBDongle-P over -E.</strong> Current guides call the P the safer pick for
+Zigbee2MQTT. Not checked against Zigbee2MQTT's own adapter page.</p>
+
+<h2 id="tracker">Gen2 track record</h2>
+<p>From the Zigbee2MQTT issue tracker: six issues about this plug, all closed, none open.</p>
+<div class="scroll">
+<table>
+  <tr><th>When</th><th>Report</th><th>Outcome</th></tr>
+  <tr><td>Feb 2023</td><td>Watts and volts missing a decimal; kWh off by 100,000x</td>
+    <td>Fixed in firmware 1.00.41 and a Zigbee2MQTT update</td></tr>
+  <tr><td>Apr 2023</td><td>Plug told to switch on turns on, then off again</td>
+    <td>Firmware bug; no recurrence after 1.00.55</td></tr>
+  <tr><td>Jan 2024</td><td>No watts shown after pairing</td><td>Closed with no reply</td></tr>
+  <tr><td>2024</td><td>Firmware updates failing; 1.00.74 brought metering trouble</td>
+    <td>Transient; 1.00.79 followed</td></tr>
+  <tr><td>Apr 2026</td><td>Vendor name shown as "?"</td><td>Cosmetic</td></tr>
+</table>
+</div>
+<p>Most of the trouble arrived by firmware update. Once the plugs work, leave updates
+alone before outage season. Firmware 1.01.01 (November 2025) shows the plug is still
+maintained. Not searched: the Home Assistant ZHA tracker, Reddit.</p>
+
+<h2 id="dehum">Dehumidifier</h2>
+<p>Your observations of 2026-10-10, not measured by an agent:</p>
+<ul>
+  <li>It resumes by itself after a power loss, so a plug <code>on</code> restores it.</li>
+  <li>It holds its compressor for 5 minutes at start-up when the humidity is above the
+    set-point. That covers the Powerwall's transfer gap; no delay protector needed.</li>
+  <li>At start-up it runs only the fan, about 75 W. The relay never closes onto the
+    compressor, so the plug's motor rating is not a concern for this unit.</li>
+</ul>
+<p>The shedder's 3-minute minimum-off rule is now redundant for this unit and stays in
+the design as cover for a later one.</p>
+<div class="box">
+  <p><strong>Open, for you to decide:</strong></p>
+  <ul>
+    <li>The restore alert fires on no compressor draw "within about 5 minutes". That is
+      shorter than the hold.</li>
+    <li>Below the set-point the compressor never starts, so no compressor draw is not
+      proof of a failed restore.</li>
+    <li>The make and model are still not recorded.</li>
+  </ul>
+</div>
+
+<h2 id="todo">To do when you pick this up</h2>
+<ol>
+  <li>Buy the two items from "Saved for later". Recheck price, seller and the title.</li>
+  <li>Read the label on a plug: 15 A and the safety listing.</li>
+  <li>Install Mosquitto and Zigbee2MQTT on the Devuan laptop; pair one plug.</li>
+  <li>Set each plug's power-on behaviour to <code>previous</code>, so a transfer gap does
+    not undo a shed. This is the agent's recommendation, untested on hardware.</li>
+  <li>Test with the internet blocked at the router: pull the plug's power, then confirm
+    on/off and the watts reading both work after it boots.</li>
+  <li>Do not update plug firmware once this passes.</li>
+  <li>Decide the two open restore-alert items above.</li>
+</ol>
+
+<h2 id="files">Files</h2>
+<ul>
+  <li><a href="design.md">docs/design.md</a>: the design of record. See "Compressor
+    protection" and "Plugs and bulbs".</li>
+  <li><a href="research/2026-09-29-plugs-lifx-research.md">docs/research/2026-09-29-plugs-lifx-research.md</a>:
+    the original plug research, with sources.</li>
+  <li><a href="../home-load-shedder-EVOLUTION.md">home-load-shedder-EVOLUTION.md</a>:
+    session H holds this day's reasoning.</li>
+  <li>gbox's plug notes live in the goldshell project: <code>docs/kasa-plugs.md</code> and
+    <code>docs/power-cycle-proposal.md</code>.</li>
+</ul>
+<p class="src">Sources:
+<a href="https://www.zigbee2mqtt.io/devices/3RSP02028BZ.html">Zigbee2MQTT Gen2</a> ·
+<a href="https://www.zigbee2mqtt.io/devices/3RSP02064Z.html">Zigbee2MQTT Gen3</a> ·
+<a href="https://github.com/Koenkk/zigbee2mqtt/issues/16646">#16646</a> ·
+<a href="https://github.com/Koenkk/zigbee2mqtt/issues/17489">#17489</a> ·
+<a href="https://github.com/Koenkk/zigbee2mqtt/issues/21017">#21017</a> ·
+<a href="https://github.com/Koenkk/zigbee2mqtt/issues/21262">#21262</a> ·
+<a href="https://github.com/Koenkk/zigbee2mqtt/issues/31665">#31665</a> ·
+<a href="https://github.com/Koenkk/zigbee2mqtt/issues/32727">#32727</a> ·
+<a href="https://privatehomelab.com/sonoff-zbdongle-e-vs-zbdongle-p-zigbee2mqtt-home-assistant-2/">E vs P guide</a></p>
+
+</main>
+</body>
+</html>
