@@ -69,7 +69,8 @@ prices and stock are a snapshot of that day</p>
     <li>The HS110 stays on the SC-BOX. gbox drives only old-protocol Kasa plugs.</li>
     <li>Plugs for the other miners are deferred.</li>
     <li>No Home Assistant is needed. Zigbee2MQTT and Mosquitto are the whole stack.</li>
-    <li>Your second review change to the spec, from 2026-10-01, is still to recall.</li>
+    <li>Your second review change to the spec, from 2026-10-01, was never recalled and
+      is dropped.</li>
   </ul>
 </div>
 
@@ -195,13 +196,15 @@ maintained. Not searched: the Home Assistant ZHA tracker, Reddit.</p>
 <p>The shedder's 3-minute minimum-off rule is now redundant for this unit and stays in
 the design as cover for a later one.</p>
 <div class="box">
-  <p><strong>Open, for you to decide:</strong></p>
+  <p><strong>Decided the same day:</strong></p>
   <ul>
-    <li>The restore alert fires on no compressor draw "within about 5 minutes". That is
-      shorter than the hold.</li>
-    <li>Below the set-point the compressor never starts, so no compressor draw is not
-      proof of a failed restore.</li>
-    <li>The make and model are still not recorded.</li>
+    <li>Model: Electrolux FFAD5033W10.</li>
+    <li>Below the set-point the fan still runs, at 60 to 85 W for 3 to 5 minutes, then
+      the unit idles at 2.3 W.</li>
+    <li>Restore check: the shedder reads the plug 1 minute after <code>on</code>; above
+      40 W means the unit is running, otherwise it alerts. Compressor draw is not
+      checked.</li>
+    <li>Power-on behaviour <code>previous</code> on every Zigbee plug.</li>
   </ul>
 </div>
 
@@ -211,11 +214,10 @@ the design as cover for a later one.</p>
   <li>Read the label on a plug: 15 A and the safety listing.</li>
   <li>Install Mosquitto and Zigbee2MQTT on the Devuan laptop; pair one plug.</li>
   <li>Set each plug's power-on behaviour to <code>previous</code>, so a transfer gap does
-    not undo a shed. This is the agent's recommendation, untested on hardware.</li>
+    not undo a shed. Decided, untested on hardware.</li>
   <li>Test with the internet blocked at the router: pull the plug's power, then confirm
     on/off and the watts reading both work after it boots.</li>
   <li>Do not update plug firmware once this passes.</li>
-  <li>Decide the two open restore-alert items above.</li>
 </ol>
 
 <h2 id="files">Files</h2>

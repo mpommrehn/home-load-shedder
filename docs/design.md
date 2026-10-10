@@ -226,15 +226,24 @@ case: the dehumidifier is shed at 5 minutes, the grid returns at 6 minutes.
   transfer gap, is Mark's reading of that test, not a separate test.
 - **Restore check.** Many dehumidifiers come back on standby after a power
   loss instead of resuming. **This one resumes by itself** (Mark, 2026-10-10),
-  so a plug `on` restores it. What the plug's relay closes onto is the fan
-  only, an AC induction motor of about 75 W (Mark's estimate); the compressor
-  starts 5 minutes later through contacts that are already closed. The
-  plug's power reading confirms every restore: fan draw at once, compressor
-  draw within about 5 minutes; if not, the shedder raises an alert.
-  **Open, from the 5-minute hold:** the compressor cannot draw before 5
-  minutes, so "within about 5 minutes" is too short a window, and with the
-  humidity below the set-point the compressor does not start at all. The
-  window and the below-set-point case are Mark's to decide.
+  so a plug `on` restores it. The unit is an Electrolux FFAD5033W10 (Mark).
+  What it draws after power returns, measured by Mark on a Kill A Watt,
+  2026-10-10:
+
+  | Humidity | First seconds | Then | After that |
+  |---|---|---|---|
+  | above the set-point | about 2 W | fan, 60 to 85 W by fan speed, for 5 min | compressor starts |
+  | below the set-point | about 2 W | fan, 60 to 85 W, for 3 to 5 min (not timed) | fan stops; 2.3 W, electronics only |
+
+  The fan runs in both cases, to pull room air across the humidity sensor
+  before the unit decides. So the plug's relay closes onto the fan only, and
+  the compressor starts through contacts that are already closed.
+  **The restore check (Mark, 2026-10-10): the shedder reads the plug's power
+  1 minute after `on`; above 40 W means the unit is running. Otherwise it
+  raises an alert.** One minute is past the 2 W start and before the fan can
+  stop. Compressor draw is not checked: no compressor may be a fault or air
+  that is dry enough, and Mark can tell the two apart from his separate
+  humidity sensor and the plug's power history.
 
 **Missing information.** pwlog's heartbeat older than 60 seconds: the shedder
 neither sheds nor restores, and raises an alert. Tier 0 does not depend on
@@ -280,9 +289,14 @@ local:
 ## Plugs and bulbs
 
 - **Zigbee** plugs with a USB coordinator (Sonoff ZBDongle-E or -P) on the
-  laptop, via Zigbee2MQTT: no WiFi, no cloud, no clock dependency. Candidates
-  with energy monitoring: OWON WSP404, ThirdReality Gen2. Check 15 A and UL
-  on the label before buying. Z-Wave (Zooz ZEN15/ZEN04) is the alternative.
+  laptop, via Zigbee2MQTT: no WiFi, no cloud, no clock dependency. Chosen
+  2026-10-10, not yet bought: ThirdReality Gen2 with energy monitoring
+  (3RSP02028BZ) and the ZBDongle-P; reasons in
+  `docs/plugs-and-coordinator-summary.html`. Check 15 A and the safety
+  listing on the label. Z-Wave (Zooz ZEN15/ZEN04) is the alternative.
+- **Power-on behaviour `previous`** on every Zigbee plug (Mark, 2026-10-10):
+  after a transfer gap a plug the shedder switched off stays off. With `on`,
+  a second gap during an outage would undo every shed. Untested on hardware.
 - **Not TP-Link for new plugs.** Kasa and Tapo set their clocks from the
   internet; after a power blip with the internet down, on/off still works but
   other features stop (TP-Link support, 2024). Some newer models fail local
@@ -315,7 +329,7 @@ ES 650G1 on NUT's compatibility list.
 | iPad loses its connection | The bulb still pulses; the daily test alert exposes it. |
 | Zigbee coordinator fails | Those plugs are not switched; shedder logs command failures and alerts. |
 | Shedder restarts mid-episode | Off times are on disk; `min_off` still holds. No record: a full `min_off` from the restart. |
-| Dehumidifier does not resume after a plug `on` | No compressor draw within about 5 minutes: alert. |
+| Dehumidifier does not resume after a plug `on` | Plug reads 40 W or less 1 minute after `on`: alert. |
 
 ## Security
 

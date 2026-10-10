@@ -174,3 +174,24 @@ the design already has is the whole stack.
 At Mark's request the agent wrote `docs/plugs-and-coordinator-summary.html`,
 a one-page summary of the findings and device recommendations, so he can
 pick the purchase up later without rereading the session.
+
+**Second addendum, same day: the open questions, answered by Mark.**
+- *Restore check.* Mark tested the dehumidifier both ways on a Kill A Watt.
+  Above the set-point: about 2 W for a few seconds, fan at 60 to 85 W for 5
+  minutes, then the compressor. Below it: the same 2 W, the fan for 3 to 5
+  minutes to sample the room air, then the fan stops and the unit idles at
+  2.3 W. The agent had recommended confirming a restore on fan draw at 2
+  minutes; Mark agreed and tightened it to **1 minute, above 40 W**, so the
+  read lands before the fan can stop. Compressor draw is not checked: Mark
+  does not want an alert that cannot tell a fault from dry air, and he has a
+  separate humidity sensor to compare against.
+- *The 5-minute tier.* The agent withdrew its 10-01 objection that the tier
+  cycles the compressor: with the hold, a unit reset by the transfer gap is
+  running only its fan when the shedder cuts it. Mark agreed. That the gap
+  resets the unit is still unobserved.
+- *Power-on behaviour.* `previous` on every Zigbee plug (agent's
+  recommendation, Mark agreed).
+- *Model.* Electrolux FFAD5033W10.
+- *The second review change from session G.* Never recalled; Mark dropped it.
+- *Carried from 09-29.* Mark confirmed the assumption: a grid drop during the
+  green phase restarts the red pattern at its 30% phase.
