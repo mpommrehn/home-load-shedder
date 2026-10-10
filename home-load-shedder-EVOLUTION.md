@@ -119,3 +119,48 @@ unless he revisits it. The cycling is why compressor protection is in.
 
 **Left open.** The dehumidifier's model, its restart delay, and whether it
 resumes after power loss. Mark's second change.
+
+## 2026-10-10, session H (0b18f330): plug shopping, dehumidifier facts
+
+**Mark's words.** "Read my projects, find Claude's recommendations for smart
+plugs with power reading capability." Then: check prices and availability
+for the Zigbee plugs on Amazon, check the Zigbee2MQTT issue tracker for the
+ThirdReality Gen2, and "record the findings."
+
+**Findings that changed the design (Mark's observations, 2026-10-10).**
+- The dehumidifier resumes by itself after a power loss. The restore check's
+  "confirm it resumes" item is closed: a plug `on` restores it.
+- It holds its compressor for 5 minutes at start-up when the humidity is
+  above the set-point. Mark reads this as covering every return of power, so
+  the appliance protects itself across the Powerwall's transfer gap and no
+  delay-on-make protector is needed.
+- At start-up it runs only its fan, an induction motor Mark puts at about
+  75 W. So the plug's relay never closes onto the compressor.
+
+**What the agent added.** The relay still opens under compressor load when
+the shedder cuts the unit; at about 500 W on a 15 A relay that was judged
+acceptable. The 3-minute `min_off` is now redundant for this unit and stays,
+as cover for a later unit without the hold. Two consequences were written
+into the spec as open: the restore alert's "about 5 minutes" window is
+shorter than the hold, and below the set-point the compressor never starts,
+so no compressor draw is not proof of a failed restore.
+
+**Plug research (no purchase decided).** Amazon blocked the agent's browser
+with its bot check; the agent did not click through, and Mark read the
+listings himself. His readings: the GE 45853GE is unavailable and poorly
+reviewed, so it is out; the ThirdReality Gen2 metering 4-pack is $39, the
+Gen3 4-pack $44 with fewer reviews. The agent checked Zigbee2MQTT: both
+models are supported and both expose the power-on behaviour setting. Its
+issue tracker has no open issue on the Gen2; the serious faults (wrong
+decimals, a plug switching on then off) were firmware bugs fixed in 2023,
+and most later trouble came in by firmware update. Recommendation: Gen2,
+and no firmware updates once the plugs work.
+
+**Pushback.** Mark proposed moving the HS110 to the dehumidifier so all
+miners share one plug model. The agent pointed out that gbox drives only
+old-protocol Kasa plugs, so a Zigbee plug on a miner leaves gbox without its
+power cycle and wall-watts reading until it gains a Zigbee path. Not decided.
+
+**Left open.** Which coordinator (guides favour the ZBDongle-P for
+Zigbee2MQTT; Amazon price not yet read). The dehumidifier's model. The
+restore-alert window. Mark's second review change from session G.

@@ -219,12 +219,22 @@ case: the dehumidifier is shed at 5 minutes, the grid returns at 6 minutes.
   2. failing that, a plug-in delay-on-make protector (an appliance or
      refrigerator protector with a restart delay of about 3 minutes)
      between the plug and the dehumidifier.
-  Decide once the model is known.
+  **Settled for this unit (Mark's observation, 2026-10-10; not measured by
+  an agent):** it holds its compressor for 5 minutes when it starts with the
+  humidity above the set-point, so option 1 applies and no protector is
+  needed. That the same hold follows every return of power, including the
+  transfer gap, is Mark's reading of that test, not a separate test.
 - **Restore check.** Many dehumidifiers come back on standby after a power
-  loss instead of resuming. If this one does, a plug `on` restores nothing.
-  Confirm it resumes (manual, then a test). The plug's power reading confirms
-  every restore: fan draw at once, compressor draw within about 5 minutes; if
-  not, the shedder raises an alert.
+  loss instead of resuming. **This one resumes by itself** (Mark, 2026-10-10),
+  so a plug `on` restores it. What the plug's relay closes onto is the fan
+  only, an AC induction motor of about 75 W (Mark's estimate); the compressor
+  starts 5 minutes later through contacts that are already closed. The
+  plug's power reading confirms every restore: fan draw at once, compressor
+  draw within about 5 minutes; if not, the shedder raises an alert.
+  **Open, from the 5-minute hold:** the compressor cannot draw before 5
+  minutes, so "within about 5 minutes" is too short a window, and with the
+  humidity below the set-point the compressor does not start at all. The
+  window and the below-set-point case are Mark's to decide.
 
 **Missing information.** pwlog's heartbeat older than 60 seconds: the shedder
 neither sheds nor restores, and raises an alert. Tier 0 does not depend on
