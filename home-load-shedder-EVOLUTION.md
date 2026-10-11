@@ -195,3 +195,23 @@ pick the purchase up later without rereading the session.
 - *The second review change from session G.* Never recalled; Mark dropped it.
 - *Carried from 09-29.* Mark confirmed the assumption: a grid drop during the
   green phase restarts the red pattern at its 30% phase.
+
+**Third addendum, same day: Mark's review of the spec finishes.**
+- *Plug power log.* The agent pointed out that a Zigbee plug never appears
+  in the Kasa app, so the power history Mark meant to consult would exist
+  only if the shedder writes it. Decision (Mark): log each metering plug's
+  watts on the laptop. He does not want remote access to the laptop and may
+  set up a phone app for the plugs himself. The agent flagged, unverified,
+  that a plug paired to Zigbee2MQTT may not be visible to the maker's app.
+- *Second read.* The agent proposed a second reading at 2 minutes before
+  the restore alert, because a Zigbee plug reports on its own schedule.
+  Mark agreed.
+- *A full bucket.* The agent guessed the 40 W check would also catch a full
+  bucket. Mark confirmed the failure is real: the drain hose has failed a
+  couple of times and the full bucket stops the compressor. Whether it stops
+  the fan too, which is what the check reads, is not observed.
+- *Folded into the spec:* the 09-29 LIFX findings that had lived only in the
+  status file. The alert table now starts red at the first off-grid fact
+  and green at the first on-grid fact, with the two-phase pulse pattern, the
+  bulb-must-be-on rule, the infrared setting and the guest-network firewall
+  rule. Next is the Fable review of the reviewed spec.

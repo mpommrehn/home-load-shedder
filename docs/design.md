@@ -3,8 +3,10 @@
 Version 0.1 (spec), 2026-09-29, session F of the powerwall work (bccf42aa).
 Every decision below was made with Mark in that session unless marked
 otherwise (2026-10-01, session G: the dehumidifier's 5-minute tier and
-compressor protection). Changing one is a decision with Mark, recorded in
-`home-load-shedder-EVOLUTION.md`.
+compressor protection; 2026-10-10, session H: the restore check, the plug
+choice, the plug power log, and the LIFX findings of 09-29 folded in).
+**Mark's review of this spec finished 2026-10-10.** Changing a decision is a
+decision with Mark, recorded in `home-load-shedder-EVOLUTION.md`.
 
 ## Purpose
 
@@ -26,7 +28,8 @@ returns 1 to 6 hours after the grid (Mark, from repeated experience).
 - A real outage, or a test opening of the main breaker, sheds each tier at its
   time (section "Tiers"), the iPad alerts and the living-room bulb pulses red.
 - After the grid has been back for 10 minutes without a drop, every shed load
-  except the PC is back on, and the bulb pulses green.
+  except the PC is back on, and the bulb has pulsed green since the grid
+  returned.
 - Nothing is harmed on the way: no miner is power-cut when a graceful shutdown
   was possible, no Nest thermostat loses power or configuration, no load is
   switched by anything other than the shedder (or by hand).
@@ -238,12 +241,20 @@ case: the dehumidifier is shed at 5 minutes, the grid returns at 6 minutes.
   The fan runs in both cases, to pull room air across the humidity sensor
   before the unit decides. So the plug's relay closes onto the fan only, and
   the compressor starts through contacts that are already closed.
-  **The restore check (Mark, 2026-10-10): the shedder reads the plug's power
-  1 minute after `on`; above 40 W means the unit is running. Otherwise it
-  raises an alert.** One minute is past the 2 W start and before the fan can
-  stop. Compressor draw is not checked: no compressor may be a fault or air
-  that is dry enough, and Mark can tell the two apart from his separate
-  humidity sensor and the plug's power history.
+  **The restore check (Mark, 2026-10-10): the shedder asks the plug for a
+  fresh power reading 1 minute after `on`; above 40 W means the unit is
+  running. At 40 W or less it reads once more at 2 minutes, and raises an
+  alert only if that is also 40 W or less.** One minute is past the 2 W
+  start, and both reads land before the fan can stop. The second read is
+  there because a Zigbee plug reports power on its own schedule and a single
+  stale value should not alert. Compressor draw is not checked: no
+  compressor may be a fault or air that is dry enough, and Mark can tell the
+  two apart from his separate humidity sensor and the plug's power log
+  (section "Log").
+  **A full bucket.** Condensate normally drains outdoors through a hose.
+  Mark has seen the hose fail a couple of times; the bucket then fills and
+  the unit stops its compressor. If it also stops the fan, which is not
+  observed, the restore check reports it.
 
 **Missing information.** pwlog's heartbeat older than 60 seconds: the shedder
 neither sheds nor restores, and raises an alert. Tier 0 does not depend on
@@ -255,6 +266,15 @@ runs in dry-run through several weeks of real blips before going live.
 **Log.** Every episode, decision, command and report goes to a local log, with
 a summary per episode.
 
+**Plug power log (Mark, 2026-10-10).** The shedder also writes each metering
+plug's power to a file on the laptop about once a minute, outage or not, as
+pwlog does for the Powerwall. A Zigbee plug's readings exist nowhere else: it
+never appears in the Kasa app. The file is read on the laptop or over the
+LAN; remote access to the laptop is not wanted. Mark may set up a phone app
+for the plugs himself. Whether a plug paired to Zigbee2MQTT can also be seen
+by ThirdReality's app is not verified; a Zigbee device joins one network at
+a time.
+
 ## Alerts
 
 No iPhone can be woken without the internet: background notifications go
@@ -264,14 +284,48 @@ local:
 
 | When | Living-room LIFX bulb | iPad (ntfy) |
 |---|---|---|
-| 2 min (heat pumps shed) | slow red pulse, repeated every few minutes until the grid is back | normal-priority message |
-| 15 min (before miners and PC) | continues | high-priority message, loud sound |
-| Episode ends | one green pulse | quiet message |
+| First `grid: off` fact | red pattern starts (below) | |
+| 2 min (heat pumps shed) | red continues | normal-priority message |
+| 15 min (before miners and PC) | red continues | high-priority message, loud sound |
+| First `grid: on` fact | green pattern starts (below) | |
+| Episode ends (10 stable min) | green continues to its own end | quiet message |
 | pwlog silent > 60 s | | high-priority message |
 
+**The pulse pattern (Mark, 2026-09-29, chosen after live tests on a bulb).**
+
+| Pattern | First 5 minutes | After that |
+|---|---|---|
+| Red, outage | 3 pulses every 30 s at 30% brightness | 1 pulse every 30 s at 10%, for as long as the outage lasts |
+| Green, grid back | 3 pulses every 30 s at 30% | 1 pulse every 30 s at 10%, for 15 more minutes |
+
+- Red starts at the first off-grid fact, so every transfer and blip flashes
+  red. Green starts at the first on-grid fact, not at the 10-minute stable
+  mark; its purpose is to reassure the household that grid power is staying.
+- A grid drop during green goes straight back to red, restarting at the 30%
+  phase, and the episode continues (confirmed by Mark, 2026-10-10).
+- Pulse brightness is a per-bulb setting, 30% by default. Full brightness
+  was "REALLY bright" in the tests.
+- **A bulb must be on to show a pulse** (verified 2026-09-29: an off bulb
+  acknowledged two pulses and showed nothing). The shedder turns an off
+  alert bulb on at 1%, 2000 K, first, and puts back its prior state after
+  the pattern ends. A bulb idling at 1% still pulses at the set brightness.
+
 - **LIFX:** LAN protocol, UDP 56700, SetWaveform (message 103) pulse with
-  return to the original colour. No cloud. The bulb gets a DHCP reservation.
-  Whether every 2017 bulb supports it identically is to be tested.
+  return to the original state. No cloud. **Verified on hardware 2026-09-29**
+  on one bulb (a LIFX+ A19, firmware 2.90): 9 of 9 pulses acknowledged over 2
+  minutes, seen by Mark, prior state restored exactly. The other bulbs are
+  untested.
+- **Infrared.** LIFX+ bulbs emit infrared for cameras, set separately from
+  visible light (SetInfrared, message 122; verified 2026-09-29, read back).
+  Each such bulb gets a setting: keep its infrared through an outage for
+  camera illumination, or switch it off as a load.
+- **Network.** Mark keeps most IoT devices, the bulbs included, on the
+  router's guest network. The shedder needs a firewall rule that lets the
+  laptop's address alone reach the guest network on UDP 56700, and on the
+  HS110's port if that plug sits there. Broadcast discovery does not cross
+  subnets, so each bulb gets a DHCP reservation and is addressed directly.
+  **Not verified:** the guest zone's name in the router's firewall, and
+  whether the router's own interface keeps a rule added through LuCI.
 - **iPad:** a 2018 iPad (LCD, so no burn-in), plugged in, auto-lock Never,
   minimum brightness, locked into the ntfy app with Guided Access, subscribed
   to the laptop's ntfy server. The ntfy iOS app receives without Apple's
@@ -329,7 +383,7 @@ ES 650G1 on NUT's compatibility list.
 | iPad loses its connection | The bulb still pulses; the daily test alert exposes it. |
 | Zigbee coordinator fails | Those plugs are not switched; shedder logs command failures and alerts. |
 | Shedder restarts mid-episode | Off times are on disk; `min_off` still holds. No record: a full `min_off` from the restart. |
-| Dehumidifier does not resume after a plug `on` | Plug reads 40 W or less 1 minute after `on`: alert. |
+| Dehumidifier does not resume after a plug `on` | Plug reads 40 W or less at 1 minute and again at 2 minutes after `on`: alert. |
 
 ## Security
 

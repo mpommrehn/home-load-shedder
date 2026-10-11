@@ -202,8 +202,10 @@ the design as cover for a later one.</p>
     <li>Below the set-point the fan still runs, at 60 to 85 W for 3 to 5 minutes, then
       the unit idles at 2.3 W.</li>
     <li>Restore check: the shedder reads the plug 1 minute after <code>on</code>; above
-      40 W means the unit is running, otherwise it alerts. Compressor draw is not
-      checked.</li>
+      40 W means the unit is running. At 40 W or less it reads again at 2 minutes and
+      alerts only if that is low too. Compressor draw is not checked.</li>
+    <li>The shedder logs each metering plug's watts to a file on the laptop about once
+      a minute. A Zigbee plug never appears in the Kasa app.</li>
     <li>Power-on behaviour <code>previous</code> on every Zigbee plug.</li>
   </ul>
 </div>
