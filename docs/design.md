@@ -254,7 +254,8 @@ case: the dehumidifier is shed at 5 minutes, the grid returns at 6 minutes.
   **A full bucket.** Condensate normally drains outdoors through a hose.
   Mark has seen the hose fail a couple of times; the bucket then fills and
   the unit stops its compressor. If it also stops the fan, which is not
-  observed, the restore check reports it.
+  observed, the restore check reports it. Mark settles that the next time
+  the bucket is full, from the wattage and the red Full LED on the panel.
 
 **Missing information.** pwlog's heartbeat older than 60 seconds: the shedder
 neither sheds nor restores, and raises an alert. Tier 0 does not depend on
