@@ -236,7 +236,7 @@ case: the dehumidifier is shed at 5 minutes, the grid returns at 6 minutes.
   | Humidity | First seconds | Then | After that |
   |---|---|---|---|
   | above the set-point | about 2 W | fan, 60 to 85 W by fan speed, for 5 min | compressor starts |
-  | below the set-point | about 2 W | fan, 60 to 85 W, for 3 to 5 min (not timed) | fan stops; 2.3 W, electronics only |
+  | below the set-point | about 2 W | fan, 60 to 85 W, for 3 min (Mark's stopwatch) | fan stops; 2.3 W, electronics only |
 
   The fan runs in both cases, to pull room air across the humidity sensor
   before the unit decides. So the plug's relay closes onto the fan only, and
@@ -245,7 +245,8 @@ case: the dehumidifier is shed at 5 minutes, the grid returns at 6 minutes.
   fresh power reading 1 minute after `on`; above 40 W means the unit is
   running. At 40 W or less it reads once more at 2 minutes, and raises an
   alert only if that is also 40 W or less.** One minute is past the 2 W
-  start, and both reads land before the fan can stop. The second read is
+  start, and both reads land before the fan can stop: it runs 3 minutes at
+  the least, so the second read has a minute in hand. The second read is
   there because a Zigbee plug reports power on its own schedule and a single
   stale value should not alert. Compressor draw is not checked: no
   compressor may be a fault or air that is dry enough, and Mark can tell the

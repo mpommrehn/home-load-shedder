@@ -215,3 +215,8 @@ pick the purchase up later without rereading the session.
   and green at the first on-grid fact, with the two-phase pulse pattern, the
   bulb-must-be-on rule, the infrared setting and the guest-network firewall
   rule. Next is the Fable review of the reviewed spec.
+
+**Fourth addendum, same day.** Mark timed the fan in the below-set-point
+case with a stopwatch: 3 minutes, the low end of his earlier "3 to 5". The
+restore check's second read at 2 minutes therefore has one minute in hand,
+not more. The check stands unchanged.
