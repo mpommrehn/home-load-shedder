@@ -73,8 +73,12 @@ The dehumidifier moved from 30 to 5 minutes on 2026-10-01 (Mark): it is
 purely discretionary, so there is no reason to carry it through an outage.
 The energy saved is small (500 W for 25 minutes is about 0.2 kWh, 2% of the
 usable battery); the cost is that, with a 5-to-7-minute median outage, it is
-shed in roughly half of all outages, so it cycles off and on far more often
-than it did at 30 minutes. That is why it gets compressor protection.
+shed in roughly half of all outages. On 2026-10-01 that read as extra
+compressor cycling, which is why it got compressor protection. On 2026-10-10
+the agent withdrew that objection and Mark agreed: the unit holds its own
+compressor for 5 minutes after power returns, so if the transfer gap resets
+it, the shedder cuts a unit that is running only its fan. That the gap
+resets the unit is not observed.
 
 ## Components and where they run
 

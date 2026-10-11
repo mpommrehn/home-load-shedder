@@ -220,3 +220,17 @@ pick the purchase up later without rereading the session.
 case with a stopwatch: 3 minutes, the low end of his earlier "3 to 5". The
 restore check's second read at 2 minutes therefore has one minute in hand,
 not more. The check stands unchanged.
+
+**Fifth addendum, same day: the review brief.** Mark: "save everything,
+then write the fable brief." The agent wrote the brief for the adversarial
+review of the reviewed spec, outside the repo in the plans folder. It names
+six areas to attack (episode logic, restarts and lost state, missing
+information, the bus, the tier-0 hardware, the executors), lists Mark's
+decisions as closed, and asks for the known-unverified items to be ranked by
+how badly the design breaks if each is false, so the bench tests get an
+order. While writing it the agent found two things in its own work: the
+Tiers section still argued the cycling objection it had withdrawn that
+morning, now corrected; and the UPS, as set up today, switches the LAN
+switches off 300 seconds after going on battery, which the spec never
+considers. The second went into the brief as a tension to test, not into
+the spec.
