@@ -234,3 +234,20 @@ that day, now corrected; and the UPS, as set up today, switches the LAN
 switches off 300 seconds after going on battery, which the spec never
 considers. The second went into the brief as a tension to test, not into
 the spec.
+
+**Sixth addendum, same day: a UPS plan for the house.** Told that the UPS
+now cuts the LAN switches at 5 minutes, Mark said it "suggests a larger UPS
+power plan is for the whole home, since I will want several network devices
+to remain 'up' while the controlling Linux machine is sequencing down
+various things around the house." The agent pushed back on "larger": the
+Powerwall is already the whole-home supply, so the question for each device
+is whether it survives the transfer gap or a local loss, not how long it
+runs; and it offered two fixes for the 5-minute cut, a second small UPS for
+the network or turning off the UPS shutdown. Mark clarified that several
+UPSs, with a small one for the networking gear, is what he meant, accepted
+the setting change as an easy fix, and added the condition that makes it
+safe: every miner on any UPS is shut down remotely through its smart plug.
+Recorded in the spec's UPS section as a direction, not a design, and put to
+the reviewer in the brief with the gap the agent sees in it: the rule is
+keyed on a UPS going on battery, a fact the shedder as specified never acts
+on.

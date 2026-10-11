@@ -377,6 +377,25 @@ signal: it sits on the Powerwall and sees only the transfer gap; it goes on
 battery only if the Powerwall itself fails or empties. **Not verified:** the
 ES 650G1 on NUT's compatibility list.
 
+**As it stands on 2026-10-10** (Mark's PowerChute settings, as he reported
+them): the UPS also feeds the LAN switches; the PC hibernates after 180
+seconds on battery, not 1 minute; and 120 seconds later the UPS switches its
+outlets off, which cuts the miner and the switches. So on a local loss of
+power the network this design depends on goes down at 5 minutes.
+
+**Direction for a house UPS plan (Mark, 2026-10-10). Not designed yet; it
+goes to the spec review first.**
+1. Several UPSs, not one bigger one, including a small UPS for the
+   networking gear alone, so the network does not share the PC's fate.
+2. Turning off "Shutdown UPS after OS shutdown" is an acceptable easy fix
+   for the 5-minute cut.
+3. With that off a miner would drain its UPS, so every miner on any UPS is
+   shut down remotely through its smart plug when that UPS goes on battery.
+
+Open, for the review: part 3 is a rule keyed on a UPS fact, not a grid fact,
+which the shedder as specified does not have; and the spec has no table of
+what powers each device on the shed, alert and restore paths.
+
 ## Failure modes
 
 | Failure | Result |
