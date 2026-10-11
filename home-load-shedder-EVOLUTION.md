@@ -229,8 +229,8 @@ information, the bus, the tier-0 hardware, the executors), lists Mark's
 decisions as closed, and asks for the known-unverified items to be ranked by
 how badly the design breaks if each is false, so the bench tests get an
 order. While writing it the agent found two things in its own work: the
-Tiers section still argued the cycling objection it had withdrawn that
-morning, now corrected; and the UPS, as set up today, switches the LAN
+Tiers section still argued the cycling objection it had withdrawn earlier
+that day, now corrected; and the UPS, as set up today, switches the LAN
 switches off 300 seconds after going on battery, which the spec never
 considers. The second went into the brief as a tension to test, not into
 the spec.
