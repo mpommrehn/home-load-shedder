@@ -69,6 +69,32 @@ season. The house lost about 20 °F in 36 hours in February with no heat, which
 Mark accepts; for a longer outage he runs resistance heaters from a 7,500 W
 portable generator.
 
+**Why the median is 5 minutes (learned 2026-10-13, Eversource technician,
+confirmed by pwlog's first recorded island).** It is the anti-islanding
+reconnect rule, not the grid. After any disturbance that makes the Powerwall
+island, IEEE 1547-2018 requires it to see the grid in its normal range for a
+delay before reconnecting, 300 s by default (UL 1741 SA/SB certifies it).
+The island of 2026-10-13 ran 13:53:47 to 13:58:47, 300 s to the poll. Two
+consequences for the tiers, recorded here for Mark's review, numbers
+unchanged:
+
+1. **300 s is the floor for every grid event here.** A glitch of a few cycles
+   produces a 5-minute island. So the 2-minute heat-pump tier fires on every
+   event, glitch or outage; that is accepted (hardware, restored on return),
+   but it means the heat pumps cycle on every glitch, which the compressor
+   protection in Tier 0 must tolerate.
+2. **The 5-minute dehumidifier tier sits on the timer's edge.** An island
+   that ends at 300 s cuts the dehumidifier within seconds of the grid
+   returning, and the compressor minimum-off then holds it off for its
+   3 to 5 minutes for nothing. Moving that tier to 6 or 7 minutes would skip
+   the timer-only islands. Mark's call; the saving at stake is 500 W for a
+   minute or two.
+
+The length of an island that ends at about 300 s measures the timer, not the
+fault. A longer one is a real outage or a grid that keeps failing the
+re-sample. The transfer in and out of the island is what disturbs the PC and
+the miners; the duration is not.
+
 The dehumidifier moved from 30 to 5 minutes on 2026-10-01 (Mark): it is
 purely discretionary, so there is no reason to carry it through an outage.
 The energy saved is small (500 W for 25 minutes is about 0.2 kWh, 2% of the
@@ -395,6 +421,67 @@ goes to the spec review first.**
 Open, for the review: part 3 is a rule keyed on a UPS fact, not a grid fact,
 which the shedder as specified does not have; and the spec has no table of
 what powers each device on the shed, alert and restore paths.
+
+**Supplies as of 2026-10-13 (Mark's words, after the outage that day):** the
+SC-BOX is on its 360 W brick, fed through the HS110 plug, and that mains feed
+is on the Back-UPS ES 650G1 with the PC and the switches. The HS-BOX is on
+the strong APW3++ supply on a regular house circuit, on no UPS and under no
+plug.
+
+### Miners on a UPS: the trade
+
+Whether a miner belongs on a UPS came up on 2026-10-13, when both miners were
+switched off by hand during the island to spare the battery. The reasoning,
+so the house UPS plan can be decided on it.
+
+What a UPS buys a miner here. In a Powerwall house the UPS works only during
+the transfer gap, the fraction of a second to a few seconds while the
+Powerwall islands or reconnects; during the island the Powerwall feeds the
+UPS which feeds the miner, so the UPS adds nothing. The benefit is riding
+through two transfers per event, which saves one reboot. A miner has no state
+to lose, so a reboot normally costs a minute or two of hashing. The exception
+is the SC-BOX's cold-start history (boots with the hashboard dead, a 134-reset
+boot fault on 2026-10-12), where a reboot can cost hours. That is the one
+real argument for ride-through, and it applies to the SC-BOX, not the HS-BOX.
+
+What it costs.
+
+- **Runtime for the PC.** The ES 650G1 exists so the PC hibernates cleanly
+  within its 180 s on battery. At 60 to 70 W (PC plus the switches' wall
+  warts) the margin is comfortable. The SC-BOX on the brick adds about 160 W
+  and roughly triples the draw, so runtime falls to a fraction; with an aged
+  battery 180 s may no longer be guaranteed. The HS-BOX on the APW3++ draws
+  350 W and more on its own and is out of the question on a 650 VA unit.
+- **Inrush and waveform.** The Back-UPS ES makes a stepped approximation of a
+  sine wave on battery. Miner supplies with active power-factor correction,
+  the APW3++ especially, draw high inrush and can stutter or trip on a stepped
+  waveform. A UPS that overloads at the transfer drops everything on it,
+  including the PC, which is worse than the miner rebooting alone.
+- **Battery wear.** Every transfer cycles the UPS battery, and the depth of
+  each cycle scales with load. Over the dozens of 5-minute islands in
+  1.5 years that shortens the life of the battery whose clean shutdown
+  matters.
+- **It works against shedding.** A UPS keeps a miner alive through exactly
+  the moments the plan wants it to drop. The smart-plug cut in part 3 handles
+  that, but only with the plug downstream of the UPS and the shedder firing.
+
+Where that leaves it. The HS-BOX stays off any UPS; load alone decides it.
+The SC-BOX on a UPS is defensible if two things are verified, and neither is
+yet: the UPS's own runtime estimate with the SC-BOX hashing stays well above
+the PC's 180 s (say 8 minutes or more, read from PowerChute or NUT with the
+miner running, not from a spec sheet), and the UPS load stays under about half
+its rating so an inrush does not tip it over at the transfer. If either
+fails, the PC's clean hibernate wins and the miner moves to a house circuit
+and accepts the reboot.
+
+**Mark's direction, 2026-10-13:** separate UPSs, not a shared one. He has
+other UPS units in the house; with new batteries, one can carry the SC-BOX
+on its own, so its load and its battery wear touch nothing else, and another
+can carry the network devices, over PoE for those that take it, so the
+network does not share the PC's fate. This refines part 1 above. Not
+designed yet: which units, their ratings against the SC-BOX's inrush, which
+switches and access points take PoE, and how each UPS reports (NUT needs a
+USB cable to a host, and the laptop has one).
 
 ## Failure modes
 
