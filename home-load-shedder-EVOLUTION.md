@@ -273,3 +273,10 @@ Addendum, same session, 2026-11-17: the owner answered HLS-262 with (a). The 87 
 commit: no address, credential or other person's data in them. They went in as their own commit (3fd9711), ahead of
 the push that also sent the dongle research. Nothing in them was edited. The open point inside them, whether to move
 the 5-minute dehumidifier tier to 6 or 7 minutes, stays the owner's call and is not yet a register row of its own.
+
+Addendum, 2026-11-17, later: the owner answered two open rows. HLS-263 (a): the dehumidifier tier moves from 5 to 6
+minutes, clearing the 300-second reconnect floor by a minute so a timer-only island no longer sheds it. The spec's
+tier table, the island paragraph, the compressor-protection example and the history note were changed to match.
+HLS-259 (a): the USB ZBDongle-P is bought first as a cheap proof of the plugs, and the LAN coordinator decided on
+2026-11-02 stays on the list with its model open (GB-025 in the gbox project). The spec's plugs section now says so.
+Nothing was bought and no code exists yet. Committed locally, not pushed.

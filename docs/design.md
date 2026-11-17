@@ -53,7 +53,7 @@ returns 1 to 6 hours after the grid (Mark, from repeated experience).
 | Trigger | Loads | Mechanism |
 |---|---|---|
 | Grid off for **2 min** | Both heat pumps (compressor and heat call) and both air-handler blowers | Hardware only (section "Tier 0"). Restored the moment the grid returns. |
-| Grid off for **5 min** | Dehumidifier (500 W) | Shedder: its Zigbee plug. Purely discretionary (Mark, 2026-10-01). Compressor protection applies (section "Compressor protection"). |
+| Grid off for **6 min** | Dehumidifier (500 W) | Shedder: its Zigbee plug. Purely discretionary (Mark, 2026-10-01); moved from 5 to 6 minutes 2026-11-17 (HLS-263). Compressor protection applies (section "Compressor protection"). |
 | Grid off for **15 min** | Miners, then the Windows PC | Shedder: gbox shuts the miners down gracefully and confirms; then the PC agent shuts the PC down (section "Miners and the PC"). |
 | Grid off for **30 min** | TVs, lamps | Shedder: Zigbee plugs and LIFX bulbs over the LAN. |
 | Outage **starts** below **60%** | The 5-, 15- and 30-minute tiers, at once | Shedder. The heat pumps still go at 2 min. |
@@ -83,19 +83,19 @@ unchanged:
    event, glitch or outage; that is accepted (hardware, restored on return),
    but it means the heat pumps cycle on every glitch, which the compressor
    protection in Tier 0 must tolerate.
-2. **The 5-minute dehumidifier tier sits on the timer's edge.** An island
-   that ends at 300 s cuts the dehumidifier within seconds of the grid
-   returning, and the compressor minimum-off then holds it off for its
-   3 to 5 minutes for nothing. Moving that tier to 6 or 7 minutes would skip
-   the timer-only islands. Mark's call; the saving at stake is 500 W for a
-   minute or two.
+2. **The dehumidifier tier sat on the timer's edge at 5 minutes.** An island
+   that ends at 300 s cut the dehumidifier within seconds of the grid
+   returning, and the compressor minimum-off then held it off for its
+   3 to 5 minutes for nothing. **Decided 2026-11-17 (Mark, HLS-263 a): the
+   tier is 6 minutes**, which clears the 300 s floor by a minute and skips the
+   timer-only islands; the saving given up is 500 W for a minute or two.
 
 The length of an island that ends at about 300 s measures the timer, not the
 fault. A longer one is a real outage or a grid that keeps failing the
 re-sample. The transfer in and out of the island is what disturbs the PC and
 the miners; the duration is not.
 
-The dehumidifier moved from 30 to 5 minutes on 2026-10-01 (Mark): it is
+The dehumidifier moved from 30 to 5 minutes on 2026-10-01 (Mark), then to 6 on 2026-11-17 (see "Why the median is 5 minutes"): it is
 purely discretionary, so there is no reason to carry it through an outage.
 The energy saved is small (500 W for 25 minutes is about 0.2 kWh, 2% of the
 usable battery); the cost is that, with a 5-to-7-minute median outage, it is
@@ -225,7 +225,7 @@ by hand.
 **Compressor protection** (Mark, 2026-10-01). A compressor switched off runs
 with high pressure on its outlet side for a few minutes. Restarted into that
 pressure, the motor stalls and its thermal overload switch trips. Mark's
-case: the dehumidifier is shed at 5 minutes, the grid returns at 6 minutes.
+case: the dehumidifier is shed at 6 minutes (5 before 2026-11-17), the grid returns a minute later.
 - Each load has a **minimum off time**, `min_off`, in its configuration:
   0 by default, **3 minutes for the dehumidifier** and for any later load
   with a compressor. The shedder never sends `on` to a load until `min_off`
@@ -380,6 +380,12 @@ local:
   (3RSP02028BZ) and the ZBDongle-P; reasons in
   `docs/plugs-and-coordinator-summary.html`. Check 15 A and the safety
   listing on the label. Z-Wave (Zooz ZEN15/ZEN04) is the alternative.
+  **2026-11-17 (Mark, HLS-259 a, HLS-088 a):** the USB ZBDongle-P is bought
+  first, as a cheap proof of the plugs, on the host that runs Zigbee2MQTT. It
+  does not replace the LAN (Ethernet) coordinator decided in GB-021 (gbox),
+  whose model is still open in GB-025 (gbox); that unit comes later so the
+  shedder and gbox can run on separate machines. Research:
+  `docs/research/2026-11-08-zigbee-dongle-p-vs-e.md`.
 - **Power-on behaviour `previous`** on every Zigbee plug (Mark, 2026-10-10):
   after a transfer gap a plug the shedder switched off stays off. With `on`,
   a second gap during an outage would undo every shed. Untested on hardware.
