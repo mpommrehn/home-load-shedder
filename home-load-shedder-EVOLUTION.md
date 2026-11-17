@@ -251,3 +251,19 @@ Recorded in the spec's UPS section as a direction, not a design, and put to
 the reviewer in the brief with the gap the agent sees in it: the rule is
 keyed on a UPS going on battery, a fact the shedder as specified never acts
 on.
+
+### 2026-11-17, session 706b85d0: the dongle comparison moves here, and the owner picks the P
+
+The ZBDongle-P versus ZBDongle-E comparison had been written on 2026-11-08 into a public gbox write-up, as a
+side note from one shopping trip. The owner asked to keep the split between projects strict, so it now lives in
+`docs/research/2026-11-08-zigbee-dongle-p-vs-e.md` and the gbox page no longer carries it.
+
+The comparison found nothing the pricier E gives a plain Zigbee plug network: its extras are a marketed
++20 dBm figure and a possible Thread or Matter route. The owner chose the P (HLS-088, "a"). Nothing was bought.
+
+The decision exposed a conflict the agent had not weighed when it recommended the P. On 2026-11-02 the owner
+decided that the Zigbee gateway should be a LAN coordinator, so the shedder and gbox can run on separate
+machines (GB-021 in the gbox project), and the model choice is still open there (GB-025). The P is a USB
+dongle, and this spec still says a USB coordinator on the Devuan laptop. Whether the P is a stepping stone or a
+replacement is open as HLS-259, with the recommendation to buy the P now as a cheap proof of the plugs and keep
+the LAN unit's model choice open. The spec was not changed.
