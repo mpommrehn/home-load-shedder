@@ -267,3 +267,9 @@ machines (GB-021 in the gbox project), and the model choice is still open there 
 dongle, and this spec still says a USB coordinator on the Devuan laptop. Whether the P is a stepping stone or a
 replacement is open as HLS-259, with the recommendation to buy the P now as a cheap proof of the plugs and keep
 the LAN unit's model choice open. The spec was not changed.
+
+Addendum, same session, 2026-11-17: the owner answered HLS-262 with (a). The 87 uncommitted spec lines, written on
+2026-10-13 (the 300-second island rule and the miners-on-a-UPS trade), were reviewed by the agent in full before the
+commit: no address, credential or other person's data in them. They went in as their own commit (3fd9711), ahead of
+the push that also sent the dongle research. Nothing in them was edited. The open point inside them, whether to move
+the 5-minute dehumidifier tier to 6 or 7 minutes, stays the owner's call and is not yet a register row of its own.
